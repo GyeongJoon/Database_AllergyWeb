@@ -1,9 +1,20 @@
+<?php 
+$con = mysqli_connect("localhost", "korea", "1234", "allergy");
+$c4_d = $_POST["c4"];
+$sql = "SELECT distinct AllergyTypes.AllergyTypeName, Users.Name
+        from Foods,Users,AllergyTypes,Allergy_Food,User_Allergy
+        where Users.UserID = User_Allergy.UserID and User_Allergy.AllergyTypeID = AllergyTypes.AllergyTypeID
+        and User_Allergy.UserallergyID = Allergy_Food.UserallergyID and Allergy_Food.FoodID = Foods.FoodID
+        and AllergyTypes.AllergyTypeName = '$c4_d'";
+$result = mysqli_query($con, $sql);
+?>
+
 <!DOCTYPE html>
 <html lang="ko">
 
 <head>
     <meta charset="UTF-8">
-    <title>음식 검색 페이지</title>
+    <title>검색 결과</title>
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700;800&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="vendor/bootstrap/css/bootstrap.min.css">
@@ -11,6 +22,35 @@
     <link rel="stylesheet" href="assets/css/templatemo-seo-dream.css">
     <link rel="stylesheet" href="assets/css/animated.css">
     <link rel="stylesheet" href="assets/css/owl.css">
+    <style>
+    h3 {
+        margin-top: 100px;
+        font-size: 50px; /* 글씨 크기 조절 */
+        font-weight: bold; /* 굵게 설정 */
+        background: linear-gradient(to right top, #ff9f31, #ff7f00);
+        color: transparent;
+        -webkit-background-clip: text;
+    }
+
+    table {
+        margin-top: 20px;
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    th,td {
+        border: 1px solid #dddddd;
+        text-align: center;
+        padding: 12px;
+        font-size: 20px;
+    }
+
+    th {
+        background-color: #f2f2f2;
+        font-size: 30px; /* 헤더 글씨 크기 조절 */
+    }
+</style>
+    </style>
 </head>
 
 <body>
@@ -55,7 +95,6 @@
         </div>
     </header>
     <!-- ***** Header Area End ***** -->
-
     <div class="main-banner wow fadeIn" id="top" data-wow-duration="1s" data-wow-delay="0.5s">
         <div class="container">
             <div class="row">
@@ -71,22 +110,17 @@
                                             <div class="container">
                                                 <div class="row">
                                                     <div class="col-lg-12">
-                                                        <h2 style="margin-top: 150px;">이름으로 검색하기</h2>
-                                                        <h4>자신의 이름을 검색하고 알레르기가 있는 음식을 확인해보아요.</h4><br><br>
-                                                        <form id="searchForm" action="foodselecter.php"
-                                                            method="post">
-                                                            <label for="foodName"
-                                                                style="font-weight: bold; font-size: 20px;">이름:</label>
-                                                            <input type="text" id="c1" name="c1"
-                                                                placeholder="이름(성함)을 검색하세요" required>
-                                                            <br><br><br>
-                                                            <div class="col-lg-12">
-                                                                <div class="main-green-button scroll-to-section">
-                                                                    <a href="#"
-                                                                        onclick="document.getElementById('searchForm').submit(); return false;">검색하기</a>
-                                                                </div>
-                                                            </div>
-                                                        </form>
+                                                        <h3>'<?php echo $c4_d;?>' 못먹는 사람</h3>
+                                                        <table>
+                                                            <tr>
+                                                                <th>이름</th>
+                                                            </tr>
+                                                            <?php while ($row = mysqli_fetch_assoc($result)) { ?>
+                                                            <tr>
+                                                                <td><?php echo $row['Name']; ?></td>
+                                                            </tr>
+                                                            <?php } ?>
+                                                        </table>
                                                     </div>
                                                 </div>
                                             </div>
